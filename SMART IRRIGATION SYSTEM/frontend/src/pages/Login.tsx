@@ -17,7 +17,16 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Load real users from Supabase
+  // Define a static list of users with local images
+  const staticUsers: User[] = [
+    { id: '1', name: 'YOKESH', role: 'Farmer', image: '/images/USER 1.jpeg' },
+    { id: '2', name: 'ARIVU', role: 'Farmer', image: '/images/USER 2.jpeg' },
+    { id: '3', name: 'MUNISAMY', role: 'Farmer', image: 'public/images/USER 3.jpeg' },
+    { id: '4', name: 'PUSHPAM', role: 'Farmer', image: 'public/images/USER 4.jpeg' },
+    { id: '5', name: 'PALANISAMY', role: 'Farmer', image: 'public/images/USER 5.jpeg' },
+  ];
+
+  // Load users from Supabase (or use static data as a fallback)
   useEffect(() => {
     const loadUsers = async () => {
       try {
@@ -30,31 +39,22 @@ const Login: React.FC = () => {
 
         if (farmers && farmers.length > 0) {
           // Map farmers to User format
-          const mappedUsers: User[] = farmers.map(farmer => ({
+          const mappedUsers: User[] = farmers.map((farmer, index) => ({
             id: `farmer-${farmer.farmer_id}`,
             name: farmer.name || 'Unknown Farmer',
             role: farmer.village ? `Farmer (${farmer.village})` : 'Farmer',
-            image: farmer.farm_image || 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?auto=format&fit=crop&q=80&w=200&h=200'
+            // Use farm_image or fallback to a unique placeholder
+            image: farmer.farm_image || `https://picsum.photos/seed/}/200`
           }));
           setUsers(mappedUsers);
         } else {
-          // Fallback if no users in DB
-          setUsers([{
-            id: 'default',
-            name: 'Guest User',
-            role: 'Farmer',
-            image: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?auto=format&fit=crop&q=80&w=200&h=200'
-          }]);
+          // Fallback to static users if no users in DB
+          setUsers(staticUsers);
         }
       } catch (error) {
-        console.error('Error loading users:', error);
-        // Fallback user on error
-        setUsers([{
-          id: 'default',
-          name: 'Guest User',
-          role: 'Farmer',
-          image: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?auto=format&fit=crop&q=80&w=200&h=200'
-        }]);
+        console.error('Error loading users, falling back to static data:', error);
+        // Fallback to static users on error
+        setUsers(staticUsers);
       } finally {
         setLoading(false);
       }
@@ -156,8 +156,8 @@ const Login: React.FC = () => {
               key={lang}
               onClick={() => setLanguage(lang)}
               className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${language === lang
-                  ? 'bg-green-700 text-white shadow-md'
-                  : 'text-gray-500 hover:text-green-700 hover:bg-green-50'
+                ? 'bg-green-700 text-white shadow-md'
+                : 'text-gray-500 hover:text-green-700 hover:bg-green-50'
                 }`}
             >
               {lang === 'en' && 'English'}

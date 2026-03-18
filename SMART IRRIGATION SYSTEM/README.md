@@ -16,7 +16,6 @@ cd "SMART IRRIGATION SYSTEM"
 
 # Terminal 1: Start Backend
 cd backend
-python -m uvicorn main:app --reload
 
 # Terminal 2: Start Frontend (in new terminal)
 cd frontend
@@ -66,12 +65,31 @@ npm run dev
 
 If you see `ERR_CONNECTION_TIMED_OUT` errors:
 
-**Quick Fix - Change DNS to Cloudflare:**
+**Option A: Manual DNS Change (No Admin Required - RECOMMENDED):**
+
+1. Press **Windows + R** → Type `ncpa.cpl` → Press Enter
+2. Right-click **"Wi-Fi"** → Select **"Properties"**
+3. Double-click **"Internet Protocol Version 4 (TCP/IPv4)"**
+4. Select **"Use the following DNS server addresses"**:
+   - Preferred DNS: `1.1.1.1`
+   - Alternate DNS: `1.0.0.1`
+5. Click **OK** twice
+6. Refresh browser (Ctrl+Shift+R)
+
+**Option B: PowerShell (Requires Admin):**
 
 ```powershell
-# Run as Administrator
+# Run PowerShell as Administrator
 Set-DnsClientServerAddress -InterfaceAlias "Wi-Fi" -ServerAddresses ("1.1.1.1","1.0.0.1")
-Clear-DnsClientCache
+ipconfig /flushdns
+```
+
+**Option C: Command Prompt (Requires Admin):**
+
+```cmd
+# Run CMD as Administrator
+netsh interface ipv4 set dns "Wi-Fi" static 1.1.1.1 primary
+netsh interface ipv4 add dns "Wi-Fi" 1.0.0.1 index=2
 ipconfig /flushdns
 ```
 
