@@ -1,0 +1,36 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "ESP32 Arduino",
+            "compilerPath": "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/tools/esp-x32/2511/bin/xtensa-esp32-elf-g++.exe",
+            "intelliSenseMode": "windows-gcc-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "defines": [
+                "ARDUINO=10819",
+                "ARDUINO_ARCH_ESP32",
+                "ESP32",
+                "F_CPU=240000000L",
+                "CORE_DEBUG_LEVEL=0"
+            ],
+            "includePath": [
+                "${workspaceFolder}/iot/**",
+                "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/cores/esp32/**",
+                "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/variants/esp32/**",
+                "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/libraries/**",
+                "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/tools/esp32-libs/3.3.7/include/**"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/iot",
+                    "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/cores/esp32",
+                    "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/variants/esp32",
+                    "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/libraries",
+                    "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/tools/esp32-libs/3.3.7/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ]
+}

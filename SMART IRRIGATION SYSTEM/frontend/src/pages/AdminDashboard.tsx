@@ -11,7 +11,7 @@ import {
     irrigationControlService, weatherService, analyticsService, seedDemoData,
     type Farm, type Land, type Crop, type Sensor, type SensorReading,
     type WaterResource, type Irrigation, type IrrigationControl, type Weather
-} from '../services/supabaseService';
+} from '../services/mongodbService';
 
 type EntityType = 'farms' | 'lands' | 'crops' | 'sensors' | 'readings' | 'water' | 'irrigation' | 'controls' | 'weather';
 
@@ -137,7 +137,7 @@ const AdminDashboard: React.FC = () => {
         setShowModal(true);
     };
 
-    const handleDelete = async (entity: EntityType, id: number) => {
+    const handleDelete = async (entity: EntityType, id: string | number) => {
         if (!window.confirm('Are you sure you want to delete this item?')) return;
 
         try {
@@ -283,8 +283,8 @@ const AdminDashboard: React.FC = () => {
             setLoading(true);
             setError(null);
             const results = await seedDemoData();
-            const successCount = results.filter(r => r.success).length;
-            const failCount = results.filter(r => !r.success).length;
+            const successCount = results.filter((r) => r.success).length;
+            const failCount = results.filter((r) => !r.success).length;
 
             if (successCount > 0) {
                 alert(`Successfully created ${successCount} farmers!`);
@@ -295,7 +295,7 @@ const AdminDashboard: React.FC = () => {
             }
 
             if (failCount > 0) {
-                const errors = results.filter(r => !r.success).map(r => r.error).join(', ');
+                const errors = results.filter((r) => !r.success).map((r) => r.error).join(', ');
                 setError(`Failed to create ${failCount} farmers: ${errors}`);
             }
         } catch (err: any) {
@@ -539,7 +539,7 @@ const DataTable: React.FC<{
     entity: EntityType;
     data: any[];
     onEdit: (item: any) => void;
-    onDelete: (entity: EntityType, id: number) => void;
+    onDelete: (entity: EntityType, id: string | number) => void;
     searchTerm: string;
 }> = ({ entity, data, onEdit, onDelete, searchTerm }) => {
     const filteredData = data.filter((item) =>
@@ -561,7 +561,7 @@ const DataTable: React.FC<{
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Object ID</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Photo</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mobile</th>
@@ -606,7 +606,7 @@ const DataTable: React.FC<{
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Land Object ID</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Land Name</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Farmer</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Area (acres)</th>
@@ -636,7 +636,7 @@ const DataTable: React.FC<{
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Crop Object ID</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Farmer</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Growth Stage</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Water Need</th>
@@ -664,10 +664,10 @@ const DataTable: React.FC<{
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sensor Object ID</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Land</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Farmer ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Farmer ObjectId</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                             </tr>
                         </thead>
@@ -692,8 +692,8 @@ const DataTable: React.FC<{
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sensor ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reading Object ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sensor ObjectId</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Moisture</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Temperature</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Recorded At</th>
@@ -738,7 +738,7 @@ const ActionButtons: React.FC<{
     item: any;
     entity: EntityType;
     onEdit: (item: any) => void;
-    onDelete: (entity: EntityType, id: number) => void;
+    onDelete: (entity: EntityType, id: string | number) => void;
     allowEdit?: boolean;
 }> = ({ item, entity, onEdit, onDelete, allowEdit = true }) => {
     const getId = () => {
@@ -837,7 +837,7 @@ const EntityForm: React.FC<{
             case 'lands':
                 return (
                     <>
-                        <InputField label="Farmer ID" type="number" value={data.farmer_id || ''} onChange={(v) => handleChange('farmer_id', Number(v))} />
+                        <InputField label="Farmer ObjectId" value={data.farmer_id || ''} onChange={(v) => handleChange('farmer_id', v)} />
                         <InputField label="Land Name" value={data.land_name || ''} onChange={(v) => handleChange('land_name', v)} />
                         <InputField label="Area (acres)" type="number" step="0.01" value={data.area_acres || ''} onChange={(v) => handleChange('area_acres', Number(v))} />
                         <InputField label="Soil Type" value={data.soil_type || ''} onChange={(v) => handleChange('soil_type', v)} />
@@ -848,7 +848,7 @@ const EntityForm: React.FC<{
             case 'crops':
                 return (
                     <>
-                        <InputField label="Farmer ID" type="number" value={data.farmer_id || ''} onChange={(v) => handleChange('farmer_id', Number(v))} />
+                        <InputField label="Farmer ObjectId" value={data.farmer_id || ''} onChange={(v) => handleChange('farmer_id', v)} />
                         <InputField label="Growth Stage" value={data.growth_stage || ''} onChange={(v) => handleChange('growth_stage', v)} />
                         <InputField label="Water Need" type="number" step="0.01" value={data.water_need || ''} onChange={(v) => handleChange('water_need', Number(v))} />
                     </>
@@ -857,16 +857,16 @@ const EntityForm: React.FC<{
             case 'sensors':
                 return (
                     <>
-                        <InputField label="Farmer ID" type="number" value={data.farmer_id || ''} onChange={(v) => handleChange('farmer_id', Number(v))} />
+                        <InputField label="Farmer ObjectId" value={data.farmer_id || ''} onChange={(v) => handleChange('farmer_id', v)} />
                         <InputField label="Sensor Type" value={data.sensor_type || ''} onChange={(v) => handleChange('sensor_type', v)} />
-                        <InputField label="Land ID" type="number" value={data.land_id || ''} onChange={(v) => handleChange('land_id', Number(v))} />
+                        <InputField label="Land ObjectId" value={data.land_id || ''} onChange={(v) => handleChange('land_id', v)} />
                     </>
                 );
 
             case 'readings':
                 return (
                     <>
-                        <InputField label="Sensor ID" type="number" value={data.sensor_id || ''} onChange={(v) => handleChange('sensor_id', Number(v))} required />
+                        <InputField label="Sensor ObjectId" value={data.sensor_id || ''} onChange={(v) => handleChange('sensor_id', v)} required />
                         <InputField label="Moisture (%)" type="number" step="0.01" value={data.moisture || ''} onChange={(v) => handleChange('moisture', Number(v))} required />
                         <InputField label="Temperature (°C)" type="number" step="0.01" value={data.temperature || ''} onChange={(v) => handleChange('temperature', Number(v))} required />
                     </>
@@ -875,7 +875,7 @@ const EntityForm: React.FC<{
             case 'water':
                 return (
                     <>
-                        <InputField label="Sensor ID" type="number" value={data.sensor_id || ''} onChange={(v) => handleChange('sensor_id', Number(v))} />
+                        <InputField label="Sensor ObjectId" value={data.sensor_id || ''} onChange={(v) => handleChange('sensor_id', v)} />
                         <InputField label="Water Level" type="number" step="0.01" value={data.water_level || ''} onChange={(v) => handleChange('water_level', Number(v))} />
                     </>
                 );
@@ -883,7 +883,7 @@ const EntityForm: React.FC<{
             case 'irrigation':
                 return (
                     <>
-                        <InputField label="Crop ID" type="number" value={data.crop_id || ''} onChange={(v) => handleChange('crop_id', Number(v))} />
+                        <InputField label="Crop ObjectId" value={data.crop_id || ''} onChange={(v) => handleChange('crop_id', v)} />
                         <InputField label="Valve Status" value={data.valve_status || ''} onChange={(v) => handleChange('valve_status', v)} />
                         <InputField label="Water Used" type="number" step="0.01" value={data.water_used || ''} onChange={(v) => handleChange('water_used', Number(v))} />
                     </>
@@ -892,7 +892,7 @@ const EntityForm: React.FC<{
             case 'controls':
                 return (
                     <>
-                        <InputField label="Water ID" type="number" value={data.water_id || ''} onChange={(v) => handleChange('water_id', Number(v))} />
+                        <InputField label="Water ObjectId" value={data.water_id || ''} onChange={(v) => handleChange('water_id', v)} />
                         <SelectField
                             label="Valve Status"
                             value={data.valve_status || 'CLOSED'}
@@ -906,7 +906,7 @@ const EntityForm: React.FC<{
             case 'weather':
                 return (
                     <>
-                        <InputField label="Sensor ID" type="number" value={data.sensor_id || ''} onChange={(v) => handleChange('sensor_id', Number(v))} />
+                        <InputField label="Sensor ObjectId" value={data.sensor_id || ''} onChange={(v) => handleChange('sensor_id', v)} />
                         <InputField label="Water Resource" value={data.water_resource || ''} onChange={(v) => handleChange('water_resource', v)} />
                     </>
                 );

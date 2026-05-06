@@ -148,3 +148,9 @@ Horizontal bar chart data with suitability scores (0-100)
 - [ ] ML-based crop predictions
 - [ ] Real-time sensor data streaming
 - [ ] Export charts as images (PNG/SVG)
+
+
+Set-Location "c:\Users\Chandru P\OneDrive\Documents\MIND MAP\DBMS\SIH25062\SMART IRRIGATION SYSTEM\backend"; & "c:\Users\Chandru P\OneDrive\Documents\MIND MAP\DBMS\SIH25062\SMART IRRIGATION SYSTEM\.venv\Scripts\python.exe" -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+
+Set-Location "c:\Users\Chandru P\OneDrive\Documents\MIND MAP\DBMS\SIH25062\SMART IRRIGATION SYSTEM\frontend"; npm run dev -- --host 0.0.0.0 --port 5173

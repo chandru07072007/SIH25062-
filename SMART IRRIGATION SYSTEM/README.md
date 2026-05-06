@@ -150,6 +150,8 @@ taskkill /PID <process_id> /F
      cd backend
      python -m uvicorn main:app --reload
      ```
+
+     Set-Location "c:\Users\Chandru P\OneDrive\Documents\MIND MAP\DBMS\SIH25062\SMART IRRIGATION SYSTEM\backend"; python -m uvicorn main:app --reload
    - **Terminal 2 (Frontend):**
      ```powershell
      cd frontend

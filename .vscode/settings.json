@@ -1,0 +1,26 @@
+{
+    "C_Cpp.default.compilerPath": "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/tools/esp-x32/2511/bin/xtensa-esp32-elf-g++.exe",
+    "C_Cpp.default.intelliSenseMode": "windows-gcc-x64",
+    "C_Cpp.default.cStandard": "c11",
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.defines": [
+        "ARDUINO=10819",
+        "ARDUINO_ARCH_ESP32",
+        "ESP32",
+        "F_CPU=240000000L",
+        "CORE_DEBUG_LEVEL=0"
+    ],
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/SMART IRRIGATION SYSTEM/iot/**",
+        "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/cores/esp32/**",
+        "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/variants/esp32/**",
+        "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/libraries/**",
+        "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/tools/esp32-libs/3.3.7/include/**",
+        "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/tools/esp32-libs/3.3.7/dio_qspi/include/**",
+        "C:/Users/Chandru P/AppData/Local/Arduino15/packages/esp32/tools/esp32-libs/3.3.7/qio_qspi/include/**",
+        "C:/Users/Chandru P/OneDrive/Documents/Arduino/libraries/DHT_sensor_library/**"
+    ],
+    "files.associations": {
+        "*.ino": "cpp"
+    }
+}

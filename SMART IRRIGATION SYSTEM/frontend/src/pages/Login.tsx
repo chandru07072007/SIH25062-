@@ -4,7 +4,14 @@ import { Mic, Camera, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useUser } from '../context/UserContext';
 import type { User } from '../context/UserContext';
-import { supabase } from '../lib/supabase';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+interface FarmerApiRow {
+  _id: string;
+  name?: string;
+  location?: string;
+}
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -26,25 +33,22 @@ const Login: React.FC = () => {
     { id: '5', name: 'PALANISAMY', role: 'Farmer', image: 'public/images/USER 5.jpeg' },
   ];
 
-  // Load users from Supabase (or use static data as a fallback)
+  // Load users from backend (or use static data as a fallback)
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const { data: farmers, error } = await supabase
-          .from('farm')
-          .select('farmer_id, name, mobile_number, village, farm_image')
-          .order('farmer_id', { ascending: true });
-
-        if (error) throw error;
+        const response = await fetch(`${API_BASE}/api/farmers/list`);
+        if (!response.ok) {
+          throw new Error('Failed to load farmers');
+        }
+        const farmers = await response.json();
 
         if (farmers && farmers.length > 0) {
-          // Map farmers to User format
-          const mappedUsers: User[] = farmers.map((farmer, index) => ({
-            id: `farmer-${farmer.farmer_id}`,
+          const mappedUsers: User[] = (farmers as FarmerApiRow[]).map((farmer: FarmerApiRow, index: number) => ({
+            id: farmer._id,
             name: farmer.name || 'Unknown Farmer',
-            role: farmer.village ? `Farmer (${farmer.village})` : 'Farmer',
-            // Use farm_image or fallback to a unique placeholder
-            image: farmer.farm_image || `https://picsum.photos/seed/}/200`
+            role: farmer.location ? `Farmer (${farmer.location})` : 'Farmer',
+            image: `https://picsum.photos/seed/farmer-${index + 1}/200`
           }));
           setUsers(mappedUsers);
         } else {

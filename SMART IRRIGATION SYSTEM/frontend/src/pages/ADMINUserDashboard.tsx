@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, MapPin, Sprout, Activity, RefreshCw, ArrowLeft, Edit2 } from 'lucide-react';
-import { farmService, landService, cropService, sensorService } from '../services/supabaseService';
+import { farmService, landService, cropService, sensorService } from '../services/mongodbService';
 
 interface FarmerDetails {
-    farmer_id: number;
+    farmer_id?: string;
     name: string;
     mobile_number?: string;
     village?: string;
@@ -39,12 +39,13 @@ const UserDashboard: React.FC = () => {
     const loadFarmers = async () => {
         try {
             const farmersData = await farmService.getAll();
+            const validFarmers = farmersData.filter((farmer): farmer is typeof farmer & { farmer_id: string } => Boolean(farmer.farmer_id));
 
             // Load related data for each farmer
             const farmersWithDetails = await Promise.all(
-                farmersData.map(async (farmer) => {
+                validFarmers.map(async (farmer) => {
                     const [lands, crops, sensors] = await Promise.all([
-                        landService.getByFarmer(farmer.farmer_id!).catch(() => []),
+                        landService.getByFarmer(farmer.farmer_id).catch(() => []),
                         cropService.getAll().then(crops => crops.filter(c => c.farmer_id === farmer.farmer_id)).catch(() => []),
                         sensorService.getAll().then(sensors => sensors.filter(s => s.farmer_id === farmer.farmer_id)).catch(() => [])
                     ]);
@@ -198,7 +199,7 @@ const UserDashboard: React.FC = () => {
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h3 className="text-xl font-bold text-gray-900 mb-1">{farmer.name}</h3>
-                                    <p className="text-sm text-gray-500">ID: {farmer.farmer_id}</p>
+                                    <p className="text-sm text-gray-500">Farmer ObjectId: {farmer.farmer_id}</p>
                                 </div>
                                 <button
                                     onClick={(e) => {
@@ -270,7 +271,7 @@ const UserDashboard: React.FC = () => {
                             <div className="flex justify-between items-start mb-6">
                                 <div>
                                     <h2 className="text-2xl font-bold text-gray-900">{selectedFarmer.name}</h2>
-                                    <p className="text-gray-500">Farmer ID: {selectedFarmer.farmer_id}</p>
+                                    <p className="text-gray-500">Farmer ObjectId: {selectedFarmer.farmer_id}</p>
                                 </div>
                                 <button
                                     onClick={() => setSelectedFarmer(null)}
@@ -334,7 +335,7 @@ const UserDashboard: React.FC = () => {
                                                 <div key={sensor.sensor_id} className="bg-purple-50 rounded-lg p-3">
                                                     <p className="font-medium">Type: {sensor.sensor_type}</p>
                                                     <p className="text-sm text-gray-600">
-                                                        Sensor ID: {sensor.sensor_id} • Land ID: {sensor.land_id}
+                                                        Sensor ObjectId: {sensor.sensor_id} • Land ObjectId: {sensor.land_id}
                                                     </p>
                                                 </div>
                                             ))}
